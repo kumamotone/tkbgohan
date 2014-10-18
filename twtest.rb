@@ -11,17 +11,14 @@ require 'json'
 require 'pp'
 require 'sparql/client'
 
+require './keys.rb' # APIキーとかはここに置く
+
 REPNODEF = 1
 REPRAMEN = 2
 REPSUSHI = 3
 REPWASHOKU = 4
 
 class TkbGohan
-  CONSUMER_KEY       = 'pqDGrK16Kbty5Dd4gamhcEka3'
-  CONSUMER_SECRET    = '6OYuyyoWeLZs6gPGwAYbzZ2BYW0yz7qMqtjbItfsJBkE1rf8aG'
-  ACCESS_TOKEN        = '2638738820-yaOqHAElDlVAl9vtFuWrZdBrBNoVHD1kil5DGFt'
-  ACCESS_TOKEN_SECRET = 'Onel3CTVvFzcbryDrexDaifT3CE9lK1CRqONb37mWvBYc' 
-
   MY_SCREEN_NAME = "TKBGohanTest"
   BOT_USER_AGENT = "つくばご飯情報bot @#{MY_SCREEN_NAME}"
   
@@ -297,6 +294,15 @@ rs = []
      }
    end
   
+  def usage
+    puts "Usage: ruby tkbgohan.ruby [-m] [-t] [-r] [-u]"
+    puts "-m: ツイート生成"
+    puts "-t: 指定時間ごとに-mで生成したツイートをつぶやく"
+    puts "-u: bot起動(UserStreamモード)"
+    puts "あとはなんかもう使えないやつだった気がする"
+  end
+
+
   def makeTweets
     rs = getRestaurants()
     
@@ -317,8 +323,8 @@ rs = []
     end
     for m in ms do
       printMenuText(m,mFilename)
-  end
-    puts "Tweets has been successfully saved."
+    end
+    puts "Tweets have successfully saved. : #{mFilename}"
   end 
   
   case ARGV[0]
@@ -326,9 +332,11 @@ rs = []
     TkbGohan.new.makeTweets
   when "-t" then
     TkbGohan.new.tweet
-  when "-r" then
-    TkbGohan.new.run
   when "-u" then
     TkbGohan.new.userStreamTest
+  when "-h" then
+    TkbGohan.new.usage;
+  else
+    TkbGohan.new.usage;
   end
 end
